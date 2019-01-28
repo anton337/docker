@@ -1,0 +1,7 @@
+1. downlaod and setup nvidia-docker
+3. on host machine, sudo systemctl multi-user.target
+4. reboot
+5. rmmod nvidia-uvm && rmmod nvidia-drm && rmmod nvidia-modeset && rmmod nvidia
+6. make ; should generate a docker image
+7. on host machine sudo systemctl graphical.target
+8. reboot
