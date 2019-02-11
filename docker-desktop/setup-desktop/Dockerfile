@@ -12,17 +12,19 @@ RUN \
   apt-get install -y build-essential && \
   apt-get install -y software-properties-common && \
   apt-get install -y byobu curl git htop man unzip vim wget && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y lxde-core xterm tightvncserver lightdm && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y lxde-core xterm tightvncserver lightdm firefox net-tools openjdk-8-jdk && \
   rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /root/.vnc/ && echo "123456" | vncpasswd -f > /root/.vnc/passwd && chmod 600 /root/.vnc/passwd
 
 RUN sed -i '21i \ \ /etc/xdg/lxsession/LXDE/* cx,' /etc/apparmor.d/lightdm-guest-session
 
+COPY ./webserver /root/
+
 RUN echo "#!/bin/sh" >> /root/.vnc/xstartup && \
     echo "export XKL_XMODMAP_DISABLE=1" >> /root/.vnc/xstartup && \
-    echo "vglrun glxspheres64 &" >> /root/.vnc/xstartup && \ # program you want to run
-    echo "/etc/X11/Xsession" >> /root/.vnc/xstartup && \ # dont really need this, unless you want to debug
+    echo "/root/run2.sh > /root/.vnc/webserver.log" >> /root/.vnc/xstartup && \
+    #echo "/etc/X11/Xsession" >> /root/.vnc/xstartup && \
     chmod +x /root/.vnc/xstartup
 
 # Set environment variables.
@@ -33,5 +35,7 @@ WORKDIR /root
 
 # Expose ports.
 EXPOSE 5901
+EXPOSE 8888
+EXPOSE 8088
 
 
